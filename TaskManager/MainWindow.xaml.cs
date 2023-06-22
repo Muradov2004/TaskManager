@@ -1,29 +1,27 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows;
-using Wpf.Ui.Controls;
 
-namespace TaskManager
+namespace TaskManager;
+
+/// <summary>
+/// Interaction logic for MainWindow.xaml
+/// </summary>
+public partial class MainWindow : Window
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : UiWindow
+    public ObservableCollection<ProcessItem> processItems { get; set; }
+
+    public MainWindow()
     {
-        public ObservableCollection<ProcessItem> processItems { get; set; } = new ObservableCollection<ProcessItem>();
+        InitializeComponent();
+        DataContext = this;
+        processItems = new();
+        var processes = Process.GetProcesses();
 
-        public MainWindow()
+        foreach (var process in processes)
         {
-            InitializeComponent();
-            double screenHeight = SystemParameters.PrimaryScreenHeight;
-            uiwindow.MaxHeight = screenHeight - 40;
-            var processes = Process.GetProcesses();
-
-            foreach (var process in processes)
-            {
-                processItems.Add(new() { ProcessIcon = null, ProcessName = process.ProcessName });
-            }
-            TasksList.ItemsSource = processItems;
+            processItems.Add(new ProcessItem() { ProcessId = process.Id, ProcessName = process.ProcessName });
         }
+        TasksList.ItemsSource = processItems;
     }
 }
