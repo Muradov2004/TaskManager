@@ -14,19 +14,57 @@
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>-->
 
-        <ListView Name="TasksList">
-            <ListView.View>
-                <GridView>
-                    <GridView.Columns>
-                        <GridViewColumn Header="Process Name" DisplayMemberBinding="{Binding ProcessName}" Width="200"/>
-                        <GridViewColumn Header="PID" DisplayMemberBinding="{Binding ProcessId}" Width="60"/>
-                        <GridViewColumn Header="Thread" DisplayMemberBinding="{Binding ProcessThreadCount}" Width="60"/>
-                        <GridViewColumn Header="Handle" DisplayMemberBinding="{Binding Handle}" Width="60"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.2*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
 
-                    </GridView.Columns>
-                </GridView>
-            </ListView.View>
-        </ListView>
+
+            <ListView Name="TasksList">
+                <ListView.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Stop Process" Click="StopProcess_Click"/>
+                        <MenuItem Header="Add BlackList" Click="AddBlackList_Click"/>
+                    </ContextMenu>
+                </ListView.ContextMenu>
+                <ListView.View>
+                    <GridView>
+                        <GridView.Columns>
+                            <GridViewColumn Header="Process Name" DisplayMemberBinding="{Binding ProcessName}" Width="220"/>
+                            <GridViewColumn Header="PID" DisplayMemberBinding="{Binding ProcessId}" Width="60"/>
+                            <GridViewColumn Header="Thread" DisplayMemberBinding="{Binding ProcessThreadCount}" Width="60"/>
+                            <GridViewColumn Header="Handle" DisplayMemberBinding="{Binding Handle}" Width="60"/>
+
+                        </GridView.Columns>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="60" />
+                </Grid.RowDefinitions>
+                <TextBlock Text="Black List" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20"/>
+
+                <ListBox x:Name="BlackList" Grid.Row="1">
+                    <ListBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Remove From BlackList" Click="RemoveBlackList_Click"/>
+                        </ContextMenu>
+                    </ListBox.ContextMenu>
+                </ListBox>
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="0.5*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="ProcessNameTxtBox" Grid.Column="0" FontSize="18" Margin="3,10" VerticalContentAlignment="Center"/>
+                    <Button Grid.Column="1" Content="Start Process" FontSize="18" Margin="3,10" Click="StartProcessButton_Click"/>
+                </Grid>
+            </Grid>
+        </Grid>
 
     </Grid>
 </Window>

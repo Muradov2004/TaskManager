@@ -25,4 +25,36 @@ public partial class MainWindow : Window
         }
         TasksList.ItemsSource = processItems;
     }
+
+    private void StopProcess_Click(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void RemoveBlackList_Click(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void AddBlackList_Click(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void StartProcessButton_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            Process.Start(ProcessNameTxtBox.Text);
+        }
+        catch (Exception ex)
+        {
+
+            MessageBox.Show("INCORRECT NAME \nError message : " + ex.Message);
+        }
+        finally
+        {
+            ProcessNameTxtBox.Clear();
+        }
+    }
 }
