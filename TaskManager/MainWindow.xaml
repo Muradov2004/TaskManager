@@ -18,9 +18,11 @@
             <ListView.View>
                 <GridView>
                     <GridView.Columns>
-                        <GridViewColumn Header="Id" DisplayMemberBinding="{Binding ProcessId}" Width="60"/>
-                        <GridViewColumn Header="Icon" DisplayMemberBinding="{Binding ProcessIcon}" Width="30"/>
                         <GridViewColumn Header="Process Name" DisplayMemberBinding="{Binding ProcessName}" Width="200"/>
+                        <GridViewColumn Header="PID" DisplayMemberBinding="{Binding ProcessId}" Width="60"/>
+                        <GridViewColumn Header="Thread" DisplayMemberBinding="{Binding ProcessThreadCount}" Width="60"/>
+                        <GridViewColumn Header="Handle" DisplayMemberBinding="{Binding Handle}" Width="60"/>
+
                     </GridView.Columns>
                 </GridView>
             </ListView.View>

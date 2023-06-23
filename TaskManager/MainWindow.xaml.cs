@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows;
 
@@ -20,7 +21,7 @@ public partial class MainWindow : Window
 
         foreach (var process in processes)
         {
-            processItems.Add(new ProcessItem() { ProcessId = process.Id, ProcessName = process.ProcessName });
+            processItems.Add(new ProcessItem() { ProcessId = process.Id, ProcessName = process.ProcessName, ProcessThreadCount = process.Threads.Count, Handle = process.HandleCount });
         }
         TasksList.ItemsSource = processItems;
     }
