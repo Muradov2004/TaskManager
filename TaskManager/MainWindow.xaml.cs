@@ -7,6 +7,7 @@ using System.Windows.Input;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using System.Windows.Media;
+using System.Linq;
 
 namespace TaskManager;
 
@@ -23,6 +24,7 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         DataContext = this;
+        blackListItems = new();
         processItems = new();
         var processes = Process.GetProcesses();
 
@@ -32,7 +34,7 @@ public partial class MainWindow : Window
         }
         TasksList.ItemsSource = processItems;
 
-        processTimer = new Timer(5000); // Interval set to 10,000 milliseconds (10 seconds)
+        processTimer = new Timer(5000); 
         processTimer.Elapsed += ProcessTimer_Elapsed!;
         processTimer.AutoReset = true;
     }
@@ -50,10 +52,7 @@ public partial class MainWindow : Window
         }
     }
 
-    private void RemoveBlackList_Click(object sender, RoutedEventArgs e)
-    {
-        blackListItems.Remove(blackListItems[BlackList.SelectedIndex]);
-    }
+    private void RemoveBlackList_Click(object sender, RoutedEventArgs e) => blackListItems.Remove(blackListItems[BlackList.SelectedIndex]);
 
     private void AddBlackList_Click(object sender, RoutedEventArgs e)
     {
@@ -77,15 +76,9 @@ public partial class MainWindow : Window
         }
     }
 
-    private void ProcessTimer_Elapsed(object sender, ElapsedEventArgs e)
-    {
-        Dispatcher.Invoke(() => RefreshProcessList());
-    }
+    private void ProcessTimer_Elapsed(object sender, ElapsedEventArgs e) => Dispatcher.Invoke(() => RefreshProcessList());
 
-    private void Window_Loaded(object sender, RoutedEventArgs e)
-    {
-        processTimer.Start();
-    }
+    private void Window_Loaded(object sender, RoutedEventArgs e) => processTimer.Start();
 
     private void RefreshProcessList()
     {
@@ -96,7 +89,23 @@ public partial class MainWindow : Window
         foreach (var process in processes)
         {
             processItems.Add(new ProcessItem() { ProcessId = process.Id, ProcessName = process.ProcessName, ProcessThreadCount = process.Threads.Count, Handle = process.HandleCount });
+
         }
+        //var blacklistedProcess = blackListItems.FirstOrDefault(p => p.ProcessId == process.Id);
+        //if (blacklistedProcess != null)
+        //{
+        //    var timer = new Timer(5000);
+        //    timer.Elapsed += (sender, e) =>
+        //    {
+        //        timer.Stop();
+        //        process.Kill();
+        //        Dispatcher.Invoke(() =>
+        //        {
+        //            LogTextBox.AppendText($"Blacklisted process {process.ProcessName} (PID: {process.Id}) has been terminated.{Environment.NewLine}");
+        //        });
+        //    };
+        //    timer.Start();
+        //}
 
     }
 
