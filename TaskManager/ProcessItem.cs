@@ -9,5 +9,5 @@ public class ProcessItem
     public string? ProcessName { get; set; }
     public int ProcessThreadCount { get; set; }
     public int Handle { get; set; }
-    public override string ToString() => $"{ProcessId} {ProcessName}";
+    public override string ToString() => ProcessName!;
 }
