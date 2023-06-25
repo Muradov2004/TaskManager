@@ -33,6 +33,7 @@ public partial class MainWindow : Window
             processItems.Add(new ProcessItem() { ProcessId = process.Id, ProcessName = process.ProcessName, ProcessThreadCount = process.Threads.Count, Handle = process.HandleCount });
         }
         TasksList.ItemsSource = processItems;
+        BlackList.ItemsSource = blackListItems;
 
         processTimer = new Timer(5000); 
         processTimer.Elapsed += ProcessTimer_Elapsed!;
@@ -91,6 +92,7 @@ public partial class MainWindow : Window
             processItems.Add(new ProcessItem() { ProcessId = process.Id, ProcessName = process.ProcessName, ProcessThreadCount = process.Threads.Count, Handle = process.HandleCount });
 
         }
+
         //var blacklistedProcess = blackListItems.FirstOrDefault(p => p.ProcessId == process.Id);
         //if (blacklistedProcess != null)
         //{
