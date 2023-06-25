@@ -66,6 +66,7 @@ public partial class MainWindow : Window
         {
             var process = processItems[TasksList.SelectedIndex];
             blackListProcesses.Add(process.ProcessName!);
+            TasksList.SelectedItem = null;
         }
         catch (Exception ex)
         {
@@ -102,7 +103,11 @@ public partial class MainWindow : Window
         );
     }
 
-    private void Window_Loaded(object sender, RoutedEventArgs e) => processTimer.Start();
+    private void Window_Loaded(object sender, RoutedEventArgs e)
+    {
+        processTimer.Start();
+        blackListTimer.Start();
+    }
 
     private void RefreshProcessList()
     {
