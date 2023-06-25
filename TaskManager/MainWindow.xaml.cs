@@ -17,14 +17,15 @@ namespace TaskManager;
 public partial class MainWindow : Window
 {
     private Timer processTimer;
-    public ObservableCollection<ProcessItem> blackListItems { get; set; }
+    private Timer blackListTimer;
+    public ObservableCollection<string> blackListProcesses { get; set; }
     public ObservableCollection<ProcessItem> processItems { get; set; }
 
     public MainWindow()
     {
         InitializeComponent();
         DataContext = this;
-        blackListItems = new();
+        blackListProcesses = new();
         processItems = new();
         var processes = Process.GetProcesses();
 
@@ -33,11 +34,14 @@ public partial class MainWindow : Window
             processItems.Add(new ProcessItem() { ProcessId = process.Id, ProcessName = process.ProcessName, ProcessThreadCount = process.Threads.Count, Handle = process.HandleCount });
         }
         TasksList.ItemsSource = processItems;
-        BlackList.ItemsSource = blackListItems;
+        BlackList.ItemsSource = blackListProcesses;
 
-        processTimer = new Timer(5000); 
+        processTimer = new Timer(1000);
         processTimer.Elapsed += ProcessTimer_Elapsed!;
         processTimer.AutoReset = true;
+        blackListTimer = new Timer(2000);
+        blackListTimer.Elapsed += blackListTimer_Elapsed!;
+        blackListTimer.AutoReset = true;
     }
 
     private void StopProcess_Click(object sender, RoutedEventArgs e)
@@ -46,19 +50,31 @@ public partial class MainWindow : Window
         {
             var process = Process.GetProcessById(processItems[TasksList.SelectedIndex].ProcessId);
             process.Kill();
+            TasksList.SelectedItem = null;
         }
         catch (Exception ex)
         {
-            MessageBox.Show("Not found process. Process stopped or something went wrong \nError message : " + ex.Message);
+            MessageBox.Show("Process not found. Process stopped or something went wrong \nError message : " + ex.Message);
         }
     }
 
-    private void RemoveBlackList_Click(object sender, RoutedEventArgs e) => blackListItems.Remove(blackListItems[BlackList.SelectedIndex]);
+    private void RemoveBlackList_Click(object sender, RoutedEventArgs e) => blackListProcesses.Remove(blackListProcesses[BlackList.SelectedIndex]);
 
     private void AddBlackList_Click(object sender, RoutedEventArgs e)
     {
-        var process = processItems[TasksList.SelectedIndex];
-        blackListItems.Add(process);
+        try
+        {
+            var process = processItems[TasksList.SelectedIndex];
+            blackListProcesses.Add(process.ProcessName!);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Process not found. Process stopped or something went wrong \nError message : " + ex.Message);
+        }
+    }
+    private void Unselect_Click(object sender, RoutedEventArgs e)
+    {
+        TasksList.SelectedItem = null;
     }
 
     private void StartProcessButton_Click(object sender, RoutedEventArgs e)
@@ -79,18 +95,29 @@ public partial class MainWindow : Window
 
     private void ProcessTimer_Elapsed(object sender, ElapsedEventArgs e) => Dispatcher.Invoke(() => RefreshProcessList());
 
+    private void blackListTimer_Elapsed(object sender, ElapsedEventArgs e)
+    {
+        Dispatcher.Invoke(() =>
+            processItems.Where(proc => blackListProcesses.Contains(proc.ProcessName!)).ToList().ForEach(bproc => Process.GetProcessById(bproc.ProcessId).Kill())
+        );
+    }
+
     private void Window_Loaded(object sender, RoutedEventArgs e) => processTimer.Start();
 
     private void RefreshProcessList()
     {
-        processItems.Clear();
-
-        var processes = Process.GetProcesses();
-
-        foreach (var process in processes)
+        if (TasksList.SelectedItem is null)
         {
-            processItems.Add(new ProcessItem() { ProcessId = process.Id, ProcessName = process.ProcessName, ProcessThreadCount = process.Threads.Count, Handle = process.HandleCount });
 
+            processItems.Clear();
+
+            var processes = Process.GetProcesses();
+
+            foreach (var process in processes)
+            {
+                processItems.Add(new ProcessItem() { ProcessId = process.Id, ProcessName = process.ProcessName, ProcessThreadCount = process.Threads.Count, Handle = process.HandleCount });
+
+            }
         }
 
         //var blacklistedProcess = blackListItems.FirstOrDefault(p => p.ProcessId == process.Id);
