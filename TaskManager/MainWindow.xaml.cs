@@ -3,10 +3,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Timers;
 using System.Windows;
-using System.Windows.Input;
-using System.Windows.Controls;
 using System.Windows.Threading;
-using System.Windows.Media;
 using System.Linq;
 
 namespace TaskManager;
@@ -99,7 +96,8 @@ public partial class MainWindow : Window
     private void blackListTimer_Elapsed(object sender, ElapsedEventArgs e)
     {
         Dispatcher.Invoke(() =>
-            processItems.Where(proc => blackListProcesses.Contains(proc.ProcessName!)).ToList().ForEach(bproc => Process.GetProcessById(bproc.ProcessId).Kill())
+            processItems.Where(proc => blackListProcesses.Contains(proc.ProcessName!)).ToList()
+                        .ForEach(bproc => Process.GetProcessById(bproc.ProcessId).Kill())
         );
     }
 
@@ -124,24 +122,6 @@ public partial class MainWindow : Window
 
             }
         }
-
-        //var blacklistedProcess = blackListItems.FirstOrDefault(p => p.ProcessId == process.Id);
-        //if (blacklistedProcess != null)
-        //{
-        //    var timer = new Timer(5000);
-        //    timer.Elapsed += (sender, e) =>
-        //    {
-        //        timer.Stop();
-        //        process.Kill();
-        //        Dispatcher.Invoke(() =>
-        //        {
-        //            LogTextBox.AppendText($"Blacklisted process {process.ProcessName} (PID: {process.Id}) has been terminated.{Environment.NewLine}");
-        //        });
-        //    };
-        //    timer.Start();
-        //}
-
     }
-
 
 }
