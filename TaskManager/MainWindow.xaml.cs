@@ -5,6 +5,8 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Threading;
 using System.Linq;
+using System.Windows.Interop;
+using System.Windows.Controls;
 
 namespace TaskManager;
 
@@ -39,6 +41,7 @@ public partial class MainWindow : Window
         blackListTimer = new Timer(2000);
         blackListTimer.Elapsed += blackListTimer_Elapsed!;
         blackListTimer.AutoReset = true;
+
     }
 
     private void StopProcess_Click(object sender, RoutedEventArgs e)
@@ -124,4 +127,58 @@ public partial class MainWindow : Window
         }
     }
 
+    private void ButtonClose_Click(object sender, RoutedEventArgs e) => Close();
+
+    bool isMaximum = false, isFull = false;
+    Point old_loc, default_loc;
+    Size old_size, default_size;
+
+    private void Rectangle_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e) => DragMove();
+
+    private void ButtonMaximize_Click(object sender, RoutedEventArgs e)
+    {
+
+        if (isMaximum == false) // app is currently not maximized ; then maximize it!
+        {
+            old_size = new Size(Width, Height);
+            old_loc = new Point(Top, Left);
+            double x = SystemParameters.WorkArea.Width;
+            double y = SystemParameters.WorkArea.Height;
+            WindowState = WindowState.Normal;
+            Top = 0;
+            Left = 0;
+            Width = x;
+            Height = y;
+            isMaximum = true;
+            isFull = false;
+        }
+
+        else // app is currentlly maximized ; then we make it normal
+        {
+            if (old_size.Width >= SystemParameters.WorkArea.Width ||
+                old_size.Height >= SystemParameters.WorkArea.Height)
+            {
+                Top = default_loc.Y;
+                Left = default_loc.X;
+                Width = default_size.Width;
+                Height = default_size.Height;
+            }
+
+            else
+            {
+                Top = old_loc.Y;
+                Left = old_loc.X;
+                Width = old_size.Width;
+                Height = old_size.Height;
+            }
+            isMaximum = false;
+            isFull = false;
+        }
+
+    }
+
+    private void ButtonMinimize_Click(object sender, RoutedEventArgs e)
+    {
+        WindowState = WindowState.Minimized;
+    }
 }
